@@ -1,3 +1,7 @@
 import { mountGanttChart } from './components/index.ts';
 
-mountGanttChart(document.querySelector<HTMLDivElement>('#app')!)
+mountGanttChart(document.querySelector<HTMLDivElement>('#app')!, {
+    boardColumns: {
+        unit: "month"
+    }
+})

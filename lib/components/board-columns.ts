@@ -1,4 +1,6 @@
-import { DAY_IN_MS } from "../constants";
+import { DEFAULT_BOARD_COLUMNS_CONFIG } from "../constants";
+import { BoardColumnsConfiguration } from "../types";
+import { millisecondsOfTimeUnit } from "../utils/mappers";
 import { BoardColumn } from "./board-column";
 
 export class BoardColumns {
@@ -6,8 +8,15 @@ export class BoardColumns {
     private _count: number;
     private _columns: BoardColumn[];
     private _element: HTMLElement;
+    private _config: BoardColumnsConfiguration;
 
-    constructor(startDate: Date = new Date(), count: number = 5) {
+    // TODO: remove default parameters (keep only for initial dev)
+    constructor(
+        config: BoardColumnsConfiguration = DEFAULT_BOARD_COLUMNS_CONFIG,
+        startDate: Date = new Date("01-01-2024"),
+        count: number = 5
+    ) {
+        this._config = config;
         this._startDate = startDate;
         this._count = count;
         this._columns = new Array(count);
@@ -42,7 +51,8 @@ export class BoardColumns {
 
         const dates = new Array(count);
         for (let i = 0; i < defaultedCount; i++) {
-            dates[i] = new Date(defaultedStartDate?.getTime() + DAY_IN_MS * i);
+            // TODO: dates are broken.
+            dates[i] = new Date(defaultedStartDate.getTime() + millisecondsOfTimeUnit(this._config.unit, defaultedStartDate)* i);
         }
         return dates;
     }
