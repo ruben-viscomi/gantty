@@ -1,7 +1,10 @@
 import { DEFAULT_BOARD_COLUMNS_CONFIG } from "../constants";
 import { addToDate } from "../core/date";
+import { TimeUnitDateDeltaGenerator, unitModule } from "../core/modules";
 import { BoardColumnsConfiguration } from "../types";
 import { BoardColumn } from "./board-column";
+
+const unitHelper = unitModule();
 
 export class BoardColumns {
     private _startDate: Date;
@@ -9,6 +12,7 @@ export class BoardColumns {
     private _columns: BoardColumn[];
     private _element: HTMLElement;
     private _config: BoardColumnsConfiguration;
+    private _deltaGenerator: TimeUnitDateDeltaGenerator;
 
     // TODO: remove default parameters (keep only for initial dev)
     constructor(
@@ -21,6 +25,7 @@ export class BoardColumns {
         this._count = count;
         this._columns = new Array(count);
         this._element = document.createElement("div");
+        this._deltaGenerator = unitHelper.getUnitDeltaGenerator(this._config.unit);
 
         this.computeBaseStyle()
 
@@ -48,11 +53,9 @@ export class BoardColumns {
     private computeDates(startDate?: Date, count?: number): Date[] {
         const defaultedStartDate = startDate ?? this._startDate;
         const defaultedCount = count ?? this._count;
-
         const dates = new Array(count);
         for (let i = 0; i < defaultedCount; i++) {
-            // TODO: create a mapper from unit to date's property to mutate.
-            dates[i] = addToDate(defaultedStartDate, { [this._config.unit + "s"]: i });
+            dates[i] = addToDate(defaultedStartDate, this._deltaGenerator(i));
         }
         return dates;
     }

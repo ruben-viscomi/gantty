@@ -10,7 +10,7 @@ export class GanttChart {
         if (configuration) {
             // TODO : configure elements
         }
-        this._columns = new BoardColumns();
+        this._columns = new BoardColumns(configuration?.boardColumns);
         this._element.appendChild(this._columns.element);
     }
 

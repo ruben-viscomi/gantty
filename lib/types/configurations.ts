@@ -7,8 +7,6 @@ export interface GanttChartConfiguration {
     boardColumns?: BoardColumnsConfiguration;
 }
 
-export type BoardColumnUnit = "hour" | "day" | "week" | "month" | "quarter" | "semester" | "year";
-
 export interface BoardColumnsConfiguration {
-    unit: BoardColumnUnit;
+    unit: string;
 }
