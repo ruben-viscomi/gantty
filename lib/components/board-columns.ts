@@ -1,6 +1,6 @@
 import { DEFAULT_BOARD_COLUMNS_CONFIG } from "../constants";
+import { addToDate } from "../core/date";
 import { BoardColumnsConfiguration } from "../types";
-import { millisecondsOfTimeUnit } from "../utils/mappers";
 import { BoardColumn } from "./board-column";
 
 export class BoardColumns {
@@ -51,8 +51,8 @@ export class BoardColumns {
 
         const dates = new Array(count);
         for (let i = 0; i < defaultedCount; i++) {
-            // TODO: dates are broken.
-            dates[i] = new Date(defaultedStartDate.getTime() + millisecondsOfTimeUnit(this._config.unit, defaultedStartDate)* i);
+            // TODO: create a mapper from unit to date's property to mutate.
+            dates[i] = addToDate(defaultedStartDate, { [this._config.unit + "s"]: i });
         }
         return dates;
     }

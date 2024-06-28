@@ -8,4 +8,4 @@ export const DAY_IN_MS = 24 * HOUR_IN_MS;
 export const WORK_WEEK_IN_MS = 5 * DAY_IN_MS;
 export const WEEK_IN_MS = 7 * DAY_IN_MS;
 
-export const DEFAULT_BOARD_COLUMNS_CONFIG: BoardColumnsConfiguration = asImmutable({ unit: "day" });
+export const DEFAULT_BOARD_COLUMNS_CONFIG: BoardColumnsConfiguration = asImmutable({ unit: "month" });
