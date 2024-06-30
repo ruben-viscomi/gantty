@@ -10,3 +10,9 @@ export interface GanttChartConfiguration {
 export interface BoardColumnsConfiguration {
     unit: string;
 }
+
+export interface BoardColumnProps {
+    unit: string;
+    value: Date;
+    position: number;
+}
