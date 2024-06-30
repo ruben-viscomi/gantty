@@ -1,13 +1,23 @@
+import { ColumnLabelTransformer, columnLabelModule } from "../core/modules";
+import { BoardColumnProps } from "../types";
+
+const labelTransformer = columnLabelModule();
+
 export class BoardColumn {
     private _element: HTMLElement;
     private _value: Date;
+    private _position: number;
+    private _transformer: ColumnLabelTransformer;
 
     // TODO : accept configuration, we might not always want a colum to represent a day, but rather a week or hour.
-    constructor(value: Date = new Date()) {
+    constructor(props: BoardColumnProps) {
+        const {unit, value, position} = props;
         this._element = document.createElement("div");
         this._value = value;
-        this._element.innerHTML = value.toDateString();
+        this._position = position;
+        this._transformer = labelTransformer.getTransformer(unit);
         this.computeBaseStyle();
+        this.updateElement();
     }
 
     set value(value: Date) {
@@ -19,9 +29,8 @@ export class BoardColumn {
         return this._element;
     }
 
-    private updateElement(value?: Date) {
-        this._element.innerHTML = value?.toDateString()
-            ?? this._value.toDateString();
+    private updateElement() {
+        this._element.innerHTML = this._transformer(this._value, this._position);
     }
 
     private computeBaseStyle() {

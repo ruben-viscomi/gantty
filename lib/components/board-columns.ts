@@ -1,10 +1,10 @@
 import { DEFAULT_BOARD_COLUMNS_CONFIG } from "../constants";
 import { addToDate } from "../core/date";
-import { TimeUnitDateDeltaGenerator, unitModule } from "../core/modules";
+import { TimeUnitDateDeltaGenerator, timeUnitModule } from "../core/modules";
 import { BoardColumnsConfiguration } from "../types";
 import { BoardColumn } from "./board-column";
 
-const unitHelper = unitModule();
+const unitHelper = timeUnitModule();
 
 export class BoardColumns {
     private _startDate: Date;
@@ -25,13 +25,17 @@ export class BoardColumns {
         this._count = count;
         this._columns = new Array(count);
         this._element = document.createElement("div");
-        this._deltaGenerator = unitHelper.getUnitDeltaGenerator(this._config.unit);
+        this._deltaGenerator = unitHelper.getGenerator(this._config.unit);
 
         this.computeBaseStyle()
 
         const dates = this.computeDates(this._startDate, this._count);
         for (let i = 0; i < this._count; i++) {
-            this._columns[i] = new BoardColumn(dates[i]);
+            this._columns[i] = new BoardColumn({
+                value: dates[i],
+                position: i + 1,
+                unit: this._config.unit,
+            });
             this._element.appendChild(this._columns[i].element);
         }
     }
