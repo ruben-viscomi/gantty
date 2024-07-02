@@ -20,6 +20,8 @@ export class BoardColumn {
         this.updateElement();
     }
 
+    destroy() { this._element.remove() }
+
     set value(value: Date) {
         this._value = value;
         this.updateElement();

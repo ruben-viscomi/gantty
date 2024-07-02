@@ -1,43 +1,31 @@
-import { DEFAULT_BOARD_COLUMNS_CONFIG } from "../constants";
 import { addToDate } from "../core/date";
 import { TimeUnitDateDeltaGenerator, timeUnitModule } from "../core/modules";
-import { BoardColumnsConfiguration } from "../types";
+import { BoardColumnsConfiguration, BoardColumnsConfigurationPropagated } from "../types";
 import { BoardColumn } from "./board-column";
 
 const unitHelper = timeUnitModule();
 
 export class BoardColumns {
     private _startDate: Date;
-    private _count: number;
+    private _endDate: Date;
     private _columns: BoardColumn[];
     private _element: HTMLElement;
     private _config: BoardColumnsConfiguration;
     private _deltaGenerator: TimeUnitDateDeltaGenerator;
 
-    // TODO: remove default parameters (keep only for initial dev)
     constructor(
-        config: BoardColumnsConfiguration = DEFAULT_BOARD_COLUMNS_CONFIG,
-        startDate: Date = new Date("01-01-2024"),
-        count: number = 5
+        config: BoardColumnsConfiguration,
+        propagatedConfig: BoardColumnsConfigurationPropagated,
     ) {
         this._config = config;
-        this._startDate = startDate;
-        this._count = count;
-        this._columns = new Array(count);
+        this._startDate = propagatedConfig.startDate;
+        this._endDate = propagatedConfig.endDate;
+        this._columns = [];
         this._element = document.createElement("div");
         this._deltaGenerator = unitHelper.getGenerator(this._config.unit);
 
-        this.computeBaseStyle()
-
-        const dates = this.computeDates(this._startDate, this._count);
-        for (let i = 0; i < this._count; i++) {
-            this._columns[i] = new BoardColumn({
-                value: dates[i],
-                position: i + 1,
-                unit: this._config.unit,
-            });
-            this._element.appendChild(this._columns[i].element);
-        }
+        this.computeBaseStyle();
+        this.updateColumns();
     }
 
     set startDate(value: Date) {
@@ -45,8 +33,8 @@ export class BoardColumns {
         this.updateColumns();
     }
 
-    set count(value: number) {
-        this._count = value;
+    set endDate(value: Date) {
+        this._endDate = value;
         this.updateColumns();
     }
 
@@ -54,22 +42,33 @@ export class BoardColumns {
         return this._element;
     }
 
-    private computeDates(startDate?: Date, count?: number): Date[] {
-        const defaultedStartDate = startDate ?? this._startDate;
-        const defaultedCount = count ?? this._count;
-        const dates = new Array(count);
-        for (let i = 0; i < defaultedCount; i++) {
-            dates[i] = addToDate(defaultedStartDate, this._deltaGenerator(i));
+    private computeDates(): Date[] {
+        const dates = [new Date(this._startDate)];
+        while (dates[dates.length - 1] < this._endDate) {
+            dates.push(addToDate(this._startDate, this._deltaGenerator(dates.length)));
         }
         return dates;
     }
 
-    private updateColumns(startDate?: Date, count?: number) {
-        const defaultedStartDate = startDate ?? this._startDate;
-        const defaultedCount = count ?? this._count;
+    private updateColumns() {
+        const dates = this.computeDates();
+        // Remove surplus columns
+        while (this._columns.length > dates.length) {
+            this._columns.pop()?.destroy();
+        }
 
-        const dates = this.computeDates(defaultedStartDate, defaultedCount);
-        for(let i = 0; i < defaultedCount; i++) {
+        for(let i = 0; i < dates.length; i++) {
+            // Add missing column
+            if (i > this._columns.length - 1) {
+                this._columns.push(new BoardColumn({
+                    value: dates[i],
+                    position: i + 1,
+                    unit: this._config.unit,
+                }));
+                this.element.appendChild(this._columns[i].element);
+                continue;
+            }
+
             this._columns[i].value = dates[i];
         }
     }
