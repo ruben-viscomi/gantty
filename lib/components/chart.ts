@@ -12,6 +12,7 @@ export class GanttChart<T> {
 
     constructor(configuration: GanttChartConfiguration<T>) {
         this._element = document.createElement("div");
+        this._element.style.overflow = "auto";
         if (configuration) {
             // TODO : configure elements
         }

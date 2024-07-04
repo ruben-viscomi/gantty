@@ -5,5 +5,5 @@ mountGanttChart(document.querySelector<HTMLDivElement>('#app')!, {
     boardColumns: {
         unit: "quarter"
     },
-    dataset: generateDataset(100, new Date("2020"), new Date("2025")),
+    dataset: generateDataset(1000000, new Date("100"), new Date("10000")),
 });

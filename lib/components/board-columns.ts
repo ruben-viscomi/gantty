@@ -8,10 +8,11 @@ const unitHelper = timeUnitModule();
 export class BoardColumns {
     private _startDate: Date;
     private _endDate: Date;
-    private _columns: BoardColumn[];
-    private _element: HTMLElement;
+    private _columns: BoardColumn[] = [];
+    private _element: HTMLElement = document.createElement("div");
     private _config: BoardColumnsConfiguration;
     private _deltaGenerator: TimeUnitDateDeltaGenerator;
+    private _unitInPx: number = 0;
 
     constructor(
         config: BoardColumnsConfiguration,
@@ -20,8 +21,6 @@ export class BoardColumns {
         this._config = config;
         this._startDate = propagatedConfig.startDate;
         this._endDate = propagatedConfig.endDate;
-        this._columns = [];
-        this._element = document.createElement("div");
         this._deltaGenerator = unitHelper.getGenerator(this._config.unit);
 
         this.computeBaseStyle();
@@ -38,9 +37,8 @@ export class BoardColumns {
         this.updateColumns();
     }
 
-    get element(): HTMLElement {
-        return this._element;
-    }
+    get element(): HTMLElement { return this._element }
+    get unitInPx(): number { return this._unitInPx }
 
     private computeDates(): Date[] {
         const dates = [new Date(this._startDate)];
@@ -71,9 +69,47 @@ export class BoardColumns {
 
             this._columns[i].value = dates[i];
         }
+
+        this.refreshColumnsStyle();
     }
 
     private computeBaseStyle() {
-        this._element.style.display = "flex";
+        this._element.style.boxSizing = "border-box";
+        this._element.style.whiteSpace = "nowrap";
+    }
+
+    private refreshColumnsStyle() {
+        this.computeUnitSizing();
+        for (let i = 0; i < this._columns.length; i++) {
+            this._columns[i].element.style.width = `${this._unitInPx}px`;
+        }
+    }
+
+    private computeUnitSizing() {       
+        if (this._columns.length < 1) {
+            this._unitInPx = 0;
+            return;
+        }
+
+        let longestI = 0;
+        for (let i = 1; i < this._columns.length; i++) {
+            if (this._columns[longestI].label.length < this._columns[i].label.length) {
+                longestI = i;
+            }
+        }
+
+        const clone = this._columns[longestI].element.cloneNode(true);
+        if (clone instanceof HTMLElement) {
+            clone.style.display = "block";
+            clone.style.position = "absolute";
+            clone.style.opacity = "0";
+            document.body.appendChild(clone);
+            const w = clone.clientWidth;
+            clone.remove();
+            this._unitInPx = w;
+            return;
+        }
+
+        this._unitInPx = 0;
     }
 }
