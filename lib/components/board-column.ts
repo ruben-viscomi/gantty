@@ -51,7 +51,7 @@ export class BoardColumn {
         this._element.style.textOverflow = "ellipsis";
 
         // TODO : debug styles go down this comment
-        this._element.style.border = "1px dashed red";
+        this._element.style.border = "1px dashed blue";
         this._element.style.padding = "0.25em";
     }
 }

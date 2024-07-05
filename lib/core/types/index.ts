@@ -1,5 +1,5 @@
 export interface Task<T> {
-    key: number | string | symbol;
+    key: number;
     data: T;
     startDate: Date;
     endDate: Date;

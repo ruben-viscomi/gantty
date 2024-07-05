@@ -10,8 +10,17 @@ export interface GanttChartConfiguration<T> {
     dataset?: Task<T>[];
 }
 
-export interface BoardColumnsConfiguration {
+export interface BaseBoardConfiguration {
     unit: string;
+}
+
+export interface BoardColumnsConfiguration extends BaseBoardConfiguration {}
+
+export interface BoardRowsConfiguration<T> extends BaseBoardConfiguration {
+    unitInPx: number;
+    dataset?: Task<T>[];
+    startDate: Date;
+    endDate: Date;
 }
 
 export interface BoardColumnsConfigurationPropagated {

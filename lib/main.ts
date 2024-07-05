@@ -3,7 +3,7 @@ import { generateDataset } from './dataset.ts';
 
 mountGanttChart(document.querySelector<HTMLDivElement>('#app')!, {
     boardColumns: {
-        unit: "quarter"
+        unit: "week"
     },
-    dataset: generateDataset(1000000, new Date("100"), new Date("10000")),
+    dataset: generateDataset(100, new Date("2020"), new Date("2024")),
 });
