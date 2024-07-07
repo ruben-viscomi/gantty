@@ -43,7 +43,11 @@ export class BoardColumns {
     private computeDates(): Date[] {
         const dates = [new Date(this._startDate)];
         while (dates[dates.length - 1] < this._endDate) {
-            dates.push(addToDate(this._startDate, this._deltaGenerator(dates.length)));
+            const date = addToDate(this._startDate, this._deltaGenerator(dates.length));
+            if (date > this._endDate) {
+                break;
+            }
+            dates.push(date);
         }
         return dates;
     }
