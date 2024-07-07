@@ -1,4 +1,4 @@
-import { DateDelta } from "../../date";
+import { DateDelta } from "../../../date";
 
 export type TimeUnitDateDeltaGenerator = (nth: number) => DateDelta
 
